@@ -5,3 +5,4 @@ CellData/chest_xray/train/PNEUMONIA/.DS_Store
 .ipynb_checkpoints/001.Data_Prep-checkpoint.ipynb
 .ipynb_checkpoints/010.EDA-checkpoint.ipynb
 .DS_Store
+.ipynb_checkpoints/020.CNN-checkpoint.ipynb
