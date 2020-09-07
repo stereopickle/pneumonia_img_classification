@@ -1,5 +1,5 @@
 # pneumonia_img_classification
 
-Eunjoo and Aren
+Eunjoo Byeon and Aren Carpenter
 
 Stuff here
