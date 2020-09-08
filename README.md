@@ -1,4 +1,5 @@
 # Detecting Pneumonia from X-Rays using Deep Learning
+Eunjoo Byeon and Aren Carpenter
 
 ## Introduction
 ---
