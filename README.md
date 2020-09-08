@@ -33,3 +33,16 @@ Lastly we applied the Principal Component Analysis (PCA) to our images to find d
 Here we are seeing the 14 principal components that explain 70% of variability in pneumonia class. We can clearly see that the edge definition is lacking compared to the normal class.
 
 
+## Convolutional Neural Network Model Evaluation
+---
+### Evaluation Metrics
+We used accuracy as the primary evaluation metric. Additionally we used a recall score as a supplementary metric as it was important to not miss any true pneumonia class. 
+
+### Optimization 
+We tested RMS-prop, Adam and Adam with AMSGrad algorithms. Using Adam-based optimizer was shown to be more optimal than RMS-Prop.
+
+### Class Imbalance
+When we are not expanding the dataset using data augmentation, we tested balancing out the class weight during model fitting. This slightly improved our validation accuracy. 
+
+
+
