@@ -6,6 +6,13 @@ Pneumonia is an acute respitory bacterial or viral infection that inflames air s
 
 Compared to other ailments of equal morbidity, pneumonia is cheap and simple to treat, often just required antibiotics. The difficulty stems from a lack of medical infastructure, both equipment and personnel, especially in the hardest hit areas like South Asia and sub-Saharan Africa. Chest X-rays are a popular and cheap test that can effectively identify pneumonia, but it still requires a trained physician to correctly diagnosis. Hence, we describe a convolutional neural network that can identify the presence of pneumonia from X-rays alone and with great accuracy and recall.
 
+## Structure
+*001.Data_Prep.ipynb*: Removing corrupt files, creating a validation set
+*010.EDA.ipynb*: Exploratory Data Analysis
+*020.CNN.ipynb*: Full modeling and evaluation process
+*PNG*: Contains images used in README
+*PDF*: Contains a non-technical presentation
+
 ## Data
 Our dataset consisted of about 5000 labeled chest x-rays provided by Kermany and his colleague as part of their article published in Cell. There was class imbalance typical of medical imaging of 1:3 normal to pneumonia.
 *Kermany, Daniel; Zhang, Kang; Goldbaum, Michael (2018), “Large Dataset of Labeled Optical Coherence Tomography (OCT) and Chest X-Ray Images”, Mendeley Data, V3*
@@ -99,4 +106,6 @@ We then looked at where our model failed.
 
 ![FN image](/PNG/FN_image.png)  ![FP_image](/PNG/FP_image.png)  
 
-The image on the left is X-ray of pneumonia patient, which our model classified as normal. The image on the right is from healthy patient, which our model classified to have pneumonia. We can suspect that the model fails to detect pneumonia when pneumonia is not significantly obstructing the view of ribcage and other organs. Also it may perform poorly when the X-ray image of healthy patient has a low contrast. We might benefit from increasing overall input size.
+The image on the left is X-ray of pneumonia patient, which our model classified as normal. The image on the right is from healthy patient, which our model classified to have pneumonia. We can suspect that the model fails to detect pneumonia when pneumonia is not significantly obstructing the view of ribcage and other organs. Also it may perform poorly when the X-ray image of healthy patient has a low contrast. We might benefit from increasing overall input size, and to incorporate information from computer tomography imaging.
+
+
