@@ -7,7 +7,8 @@ Pneumonia is an acute respitory bacterial or viral infection that inflames air s
 Compared to other ailments of equal morbidity, pneumonia is cheap and simple to treat, often just required antibiotics. The difficulty stems from a lack of medical infastructure, both equipment and personnel, especially in the hardest hit areas like South Asia and sub-Saharan Africa. Chest X-rays are a popular and cheap test that can effectively identify pneumonia, but it still requires a trained physician to correctly diagnosis. Hence, we describe a convolutional neural network that can identify the presence of pneumonia from X-rays alone and with great accuracy and recall.
 
 ## Data
-Our dataset consisted of about 5000 labeled chest x-rays provided by Kermany, Zhang, Goldbaum, et al. as part of their article published in Cell. There was class imbalance typical of medical imaging of 1:3 normal to pneumonia.
+Our dataset consisted of about 5000 labeled chest x-rays provided by Kermany and his colleague as part of their article published in Cell. There was class imbalance typical of medical imaging of 1:3 normal to pneumonia.
+*Kermany, Daniel; Zhang, Kang; Goldbaum, Michael (2018), “Large Dataset of Labeled Optical Coherence Tomography (OCT) and Chest X-Ray Images”, Mendeley Data, V3*
 
 ### Data Cleaning
 We removed 217 images that did not have a proper encoding. This left us with 5,053  files in our training set.  
@@ -41,16 +42,68 @@ Here we are seeing the 14 principal components that explain 70% of variability i
 
 ## Model Evaluation
 ### Evaluation Metrics
-We used accuracy as the primary evaluation metric. Additionally we used a recall score as a supplementary metric because we would rather have a false positive that future testing would catch than a missed case.
+Since we would rather have false positive than to miss a pneumonia case in future testing, we would prioritize the recall score. But our dataset is imbalanced with the pneumonia (positive) case being majority, so the recall alone will not be enough to evaluate the model. (The recall will likely be good if our model prioritize answering positive) So we looked at accuracy and recall together. 
 
 ### Loss Function
-As this is a binary classification problem (Presence of Pneumonia or not) we used binary crossentropy as our loss function.
+As this is a binary classification problem (presence of pneumonia or not) we used binary crossentropy as our loss function.
  
 ### Optimization 
 We tested RMS-prop, Adam and Adam with AMSGrad algorithms. Using Adam-based optimizer was shown to be more optimal than RMS-Prop.
 
 ### Class Imbalance
-When we are not expanding the dataset using data augmentation, we tested balancing out the class weight during model fitting. This slightly improved our validation accuracy. 
+When we are not expanding the dataset using data augmentation, we tested balancing out the class weight during model fitting. This slightly improved our validation accuracy. Otherwise we assumed that data augmentation added enough data to account for the imbalance.
 
-We developed a convolutional neural network with __ Conv2D layers with ReLu activation and batch normalization techniques before feeding into __ Dense layers.
+### Normalization
+After fitting all X-Ray images into a square (either 150 or 200px), we rescaled each pixel to be between 0 to 1.
 
+### Baseline Model
+We developed an overfitting baseline convolutional neural network with 4 Conv2D layers with Relu activation and 3x3 filter followed by MaxPooling with 2x2 filter and stride of 2 before feeding into Dense layers. The baseline had a vert high recall but the loss was pretty high as well. 
+
+| Model | Loss | Accuracy | Recall |
+| ---- | ---- | ---- | ---- |
+| Baseline | 3.75 | 0.83 | 0.99 |
+
+### Iterative Process
+We took the iterative process to develop our model. Our process included adjusting the complexity of the model, fine tuning data augmentation criteria, using batch normalization and pre-trained network. 
+
+### Final Model
+Below table and image shows the architecture of our best performing model.  
+
+![final model](/PNG/final_model_architecture.png)  
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+conv2d_94 (Conv2D)           (None, 150, 150, 32)      320       
+_________________________________________________________________
+max_pooling2d_94 (MaxPooling (None, 75, 75, 32)        0         
+_________________________________________________________________
+conv2d_95 (Conv2D)           (None, 75, 75, 64)        18496     
+_________________________________________________________________
+max_pooling2d_95 (MaxPooling (None, 37, 37, 64)        0         
+_________________________________________________________________
+conv2d_96 (Conv2D)           (None, 37, 37, 256)       147712    
+_________________________________________________________________
+max_pooling2d_96 (MaxPooling (None, 18, 18, 256)       0         
+_________________________________________________________________
+flatten_25 (Flatten)         (None, 82944)             0         
+_________________________________________________________________
+dense_51 (Dense)             (None, 1024)              84935680  
+_________________________________________________________________
+dense_52 (Dense)             (None, 1)                 1025      
+=================================================================
+
+#### Performance
+Our final model showed the accuracy of 95% in classifying between pneumonia and normal case. It captured 97% of pneumonia cases.
+
+| Model | Loss | Accuracy | Recall |
+| ---- | ---- | ---- | ---- |
+| Baseline | 3.75 | 0.83 | 0.99 |
+| Final | 0.25 | 0.95 | 0.97 |
+
+![final model_confusion matrix](/PNG/confusion_matrix.png)  
+
+
+### Evaluation
+We then looked at where our model failed. 
+![FN image](/PNG/FN_image.png)  ![FP_image](/PNG/FP_image.png)  
+The image on the left is X-ray of pneumonia patient, which our model classified as normal. The image on the right is from healthy patient, which our model classified to have pneumonia. We can suspect that the model fails to detect pneumonia when pneumonia is not significantly obstructing the view of ribcage and other organs. Also it may perform poorly when the X-ray image of healthy patient has a low contrast. We might benefit from increasing overall input size.
