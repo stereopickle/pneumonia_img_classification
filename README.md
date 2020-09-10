@@ -78,7 +78,7 @@ Below table and image shows the architecture of our best performing model.
 | conv2d_95 (Conv2D) | (None, 75, 75, 64) | 18496 |
 | max_pooling2d_95 (MaxPooling | (None, 37, 37, 64) | 0 |
 | conv2d_96 (Conv2D) | (None, 37, 37, 256) | 147712 |
-| max_pooling2d_96 (MaxPooling (None, 18, 18, 256) | 0 |
+| max_pooling2d_96 (MaxPooling | (None, 18, 18, 256) | 0 |
 | flatten_25 (Flatten) | (None, 82944) | 0 |
 | dense_51 (Dense) | (None, 1024) | 84935680 |
 | dense_52 (Dense) | (None, 1) | 1025 |
@@ -95,6 +95,8 @@ Our final model showed the accuracy of 95% in classifying between pneumonia and 
 
 
 ### Evaluation
-We then looked at where our model failed. 
+We then looked at where our model failed.  
+
 ![FN image](/PNG/FN_image.png)  ![FP_image](/PNG/FP_image.png)  
+
 The image on the left is X-ray of pneumonia patient, which our model classified as normal. The image on the right is from healthy patient, which our model classified to have pneumonia. We can suspect that the model fails to detect pneumonia when pneumonia is not significantly obstructing the view of ribcage and other organs. Also it may perform poorly when the X-ray image of healthy patient has a low contrast. We might benefit from increasing overall input size.
