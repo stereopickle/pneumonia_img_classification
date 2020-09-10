@@ -70,27 +70,18 @@ We took the iterative process to develop our model. Our process included adjusti
 Below table and image shows the architecture of our best performing model.  
 
 ![final model](/PNG/final_model_architecture.png)  
-_________________________________________________________________
-Layer (type)                 Output Shape              Param #   
-=================================================================
-conv2d_94 (Conv2D)           (None, 150, 150, 32)      320       
-_________________________________________________________________
-max_pooling2d_94 (MaxPooling (None, 75, 75, 32)        0         
-_________________________________________________________________
-conv2d_95 (Conv2D)           (None, 75, 75, 64)        18496     
-_________________________________________________________________
-max_pooling2d_95 (MaxPooling (None, 37, 37, 64)        0         
-_________________________________________________________________
-conv2d_96 (Conv2D)           (None, 37, 37, 256)       147712    
-_________________________________________________________________
-max_pooling2d_96 (MaxPooling (None, 18, 18, 256)       0         
-_________________________________________________________________
-flatten_25 (Flatten)         (None, 82944)             0         
-_________________________________________________________________
-dense_51 (Dense)             (None, 1024)              84935680  
-_________________________________________________________________
-dense_52 (Dense)             (None, 1)                 1025      
-=================================================================
+
+| Layer (type) | Output Shape | Param # | 
+| ---- | ---- | ---- |
+| conv2d_94 (Conv2D) | (None, 150, 150, 32) | 320 |   
+| max_pooling2d_94 (MaxPooling | (None, 75, 75, 32) | 0 |
+| conv2d_95 (Conv2D) | (None, 75, 75, 64) | 18496 |
+| max_pooling2d_95 (MaxPooling | (None, 37, 37, 64) | 0 |
+| conv2d_96 (Conv2D) | (None, 37, 37, 256) | 147712 |
+| max_pooling2d_96 (MaxPooling | (None, 18, 18, 256) | 0 |
+| flatten_25 (Flatten) | (None, 82944) | 0 |
+| dense_51 (Dense) | (None, 1024) | 84935680 |
+| dense_52 (Dense) | (None, 1) | 1025 |
 
 #### Performance
 Our final model showed the accuracy of 95% in classifying between pneumonia and normal case. It captured 97% of pneumonia cases.
@@ -104,6 +95,8 @@ Our final model showed the accuracy of 95% in classifying between pneumonia and 
 
 
 ### Evaluation
-We then looked at where our model failed. 
+We then looked at where our model failed.  
+
 ![FN image](/PNG/FN_image.png)  ![FP_image](/PNG/FP_image.png)  
+
 The image on the left is X-ray of pneumonia patient, which our model classified as normal. The image on the right is from healthy patient, which our model classified to have pneumonia. We can suspect that the model fails to detect pneumonia when pneumonia is not significantly obstructing the view of ribcage and other organs. Also it may perform poorly when the X-ray image of healthy patient has a low contrast. We might benefit from increasing overall input size.
