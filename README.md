@@ -18,10 +18,10 @@ Our dataset consisted of about 5000 labeled chest x-rays provided by Kermany and
 *Kermany, Daniel; Zhang, Kang; Goldbaum, Michael (2018), “Large Dataset of Labeled Optical Coherence Tomography (OCT) and Chest X-Ray Images”, Mendeley Data, V3*
 
 ### Data Cleaning
-We removed 217 images that did not have a proper encoding. This left us with 5,053  files in our training set.  
-Out of which, we set 20% from each class as a validation set.  
+We removed 217 images that did not have a proper encoding. This left us with 5,639 files in our data set.  
+Out of which, we set 15% as a validation set and another 15% as a test set.  
 
-Our final training set included 1,042 normal chest X-ray images and 3,001 chest X-ray of pneumonia patients. 
+Our final training set included 1,076 normal chest X-ray images and 2,873 chest X-ray of pneumonia patients. 
 
 ## Exploratory Data Analysis
 ![example images](/PNG/example_images.png)  
@@ -49,7 +49,7 @@ Here we are seeing the 14 principal components that explain 70% of variability i
 
 ## Model Evaluation
 ### Evaluation Metrics
-Since we would rather have false positive than to miss a pneumonia case in future testing, we would prioritize the recall score. But our dataset is imbalanced with the pneumonia (positive) case being majority, so the recall alone will not be enough to evaluate the model. (The recall will likely be good if our model prioritize answering positive) So we looked at accuracy and recall together. 
+Since we would rather have false positive than to miss a pneumonia case in future testing, we would prioritize the recall score. But our dataset is imbalanced with the pneumonia (positive) case being majority, so the bias towards the majority will result in high recall score. So we looked at overall accuracy while taking the recall score into consideration. 
 
 ### Loss Function
 As this is a binary classification problem (presence of pneumonia or not) we used binary crossentropy as our loss function.
@@ -61,14 +61,14 @@ We tested RMS-prop, Adam and Adam with AMSGrad algorithms. Using Adam-based opti
 When we are not expanding the dataset using data augmentation, we tested balancing out the class weight during model fitting. This slightly improved our validation accuracy. Otherwise we assumed that data augmentation added enough data to account for the imbalance.
 
 ### Normalization
-After fitting all X-Ray images into a square (either 150 or 200px), we rescaled each pixel to be between 0 to 1.
+After fitting all X-Ray images into a square (256 x 256), we rescaled each pixel to be between 0 to 1.
 
 ### Baseline Model
-We developed an overfitting baseline convolutional neural network with 4 Conv2D layers with Relu activation and 3x3 filter followed by MaxPooling with 2x2 filter and stride of 2 before feeding into Dense layers. The baseline had a vert high recall but the loss was pretty high as well. 
+We developed an  baseline convolutional neural network with a simple Conv2D layer with Relu activation and 3x3 filter followed by MaxPooling with 2x2 filter before feeding into Dense layers. Our baseline model performed pretty well.
 
 | Model | Loss | Accuracy | Recall |
 | ---- | ---- | ---- | ---- |
-| Baseline | 3.75 | 0.83 | 0.99 |
+| Baseline | 0.143 | 0.944 | 0.964 |
 
 ### Iterative Process
 We took the iterative process to develop our model. Our process included adjusting the complexity of the model, fine tuning data augmentation criteria, using batch normalization and pre-trained network. 
@@ -80,23 +80,27 @@ Below table and image shows the architecture of our best performing model.
 
 | Layer (type) | Output Shape | Param # | 
 | ---- | ---- | ---- |
-| conv2d_94 (Conv2D) | (None, 150, 150, 32) | 320 |   
-| max_pooling2d_94 (MaxPooling | (None, 75, 75, 32) | 0 |
-| conv2d_95 (Conv2D) | (None, 75, 75, 64) | 18496 |
-| max_pooling2d_95 (MaxPooling | (None, 37, 37, 64) | 0 |
-| conv2d_96 (Conv2D) | (None, 37, 37, 256) | 147712 |
-| max_pooling2d_96 (MaxPooling | (None, 18, 18, 256) | 0 |
-| flatten_25 (Flatten) | (None, 82944) | 0 |
-| dense_51 (Dense) | (None, 1024) | 84935680 |
-| dense_52 (Dense) | (None, 1) | 1025 |
+| conv2d_7 (Conv2D) | (None, 256, 256, 32) | 320 | 
+| max_pooling2d_7 (MaxPooling2 | (None, 128, 128, 32) | 0 | 
+| conv2d_8 (Conv2D) | (None, 128, 128, 64) | 18496 | 
+| max_pooling2d_8 (MaxPooling2 | (None, 64, 64, 64) | 0 | 
+| conv2d_9 (Conv2D) | (None, 64, 64, 128) | 73856 | 
+| max_pooling2d_9 (MaxPooling2 | (None, 32, 32, 128) | 0 | 
+| conv2d_10 (Conv2D) | (None, 32, 32, 256) | 295168 | 
+| max_pooling2d_10 (MaxPooling | (None, 16, 16, 256) | 0 | 
+| conv2d_11 (Conv2D) | (None, 16, 16, 512) | 1180160 | 
+| max_pooling2d_11 (MaxPooling | (None, 8, 8, 512) | 0 | 
+| flatten_2 (Flatten) | (None, 32768) | 0 | 
+| dense_4 (Dense) | (None, 2048) | 67110912 | 
+| dense_5 (Dense) | (None, 1) | 2049 | 
 
 #### Performance
 Our final model showed the accuracy of 95% in classifying between pneumonia and normal case. It captured 97% of pneumonia cases.
 
 | Model | Loss | Accuracy | Recall |
 | ---- | ---- | ---- | ---- |
-| Baseline | 3.75 | 0.83 | 0.99 |
-| Final | 0.25 | 0.95 | 0.97 |
+| Baseline | 0.143 | 0.944 | 0.964 |
+| Final | 0.061 | 0.978 | 0.979 |
 
 ![final model_confusion matrix](/PNG/confusion_matrix.png)  
 
